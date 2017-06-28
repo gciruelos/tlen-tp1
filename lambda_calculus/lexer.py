@@ -32,7 +32,7 @@ class LambdaType:
     def type(self):
         return self.type_
     def __repr__(self):
-        return 'LambdaType<'+str(self.type_)+'>'
+        return 'Type<'+str(self.type_)+'>'
 
 class LBool:
     def __init__(self, t):
@@ -43,7 +43,7 @@ class LBool:
     def value(self):
         return self.value_
     def __repr__(self):
-        return 'LambdaExpr<'+str(self.value_)+' : '+str(self.type_.type())+'>'
+        return 'Expr<'+str(self.value_)+' : '+str(self.type_.type())+'>'
 
 class LNat:
     def __init__(self, n):
@@ -54,7 +54,7 @@ class LNat:
     def value(self):
         return self.value_
     def __repr__(self):
-        return 'LambdaExpr<'+str(self.value_)+' : '+str(self.type_)+'>'
+        return 'Expr<'+str(self.value_)+' : '+str(self.type_)+'>'
 
 class LVar:
     def __init__(self, v):
@@ -64,7 +64,7 @@ class LVar:
     def value(self):
         return self.value_
     def __repr__(self):
-        return 'LambdaExpr<'+str(self.value_)+'>'
+        return 'Expr<'+str(self.value_)+'>'
 
 class LLambda:
     def __init__(self, x, t, m):
@@ -73,8 +73,17 @@ class LLambda:
         return None
     def value(self):
         return self.value_
+    def eval_in(self, other_expr):
+        m = self.value_[2]
+        class_type = m.__class__.__name__
+        if class_type == 'LLambda':
+            return m.eval_in(other_expr)
+        elif class_type == 'LVar':
+            if m.value() == self.value_[0].value():
+                return other_expr
+
     def __repr__(self):
-        return 'LambdaExpr<'+str(self.value_)+'>'
+        return 'Expr<\\'+str(self.value_)+'>'
 
 tokens = (
     'TRUE',
@@ -91,6 +100,10 @@ tokens = (
 
     'NAT',
 
+    'LPARENS',
+    'RPARENS',
+
+
 )
 
 
@@ -102,6 +115,9 @@ t_LAM = r'\\'
 t_COLON = r':'
 t_DOT = r'.'
 t_NAT = r'Nat'
+
+t_LPARENS = r'\('
+t_RPARENS = r'\)'
 
 
 t_ignore = ' \t'

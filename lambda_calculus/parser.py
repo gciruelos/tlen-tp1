@@ -35,13 +35,24 @@ def p_expr_lambda(p):
 
 def p_lambda(p):
     'lambda : LAM VAR COLON type DOT expr'
-    print(list(p))
     p[0] = LLambda(p[2], p[4], p[6])
 
 def p_type_nat(p):
     'type : NAT'
     p[0] = LambdaType('Nat')
 
+
+def p_expr_app(p):
+    'expr : func arg'
+    p[0] = p[1].eval_in(p[2])
+
+def p_func_lambda(p):
+    'func : LPARENS lambda RPARENS'
+    p[0] = p[2]
+
+def p_arg_expr(p):
+    'arg : expr'
+    p[0] = p[1]
 
 
 def p_error(p):
