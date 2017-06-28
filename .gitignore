@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# ply
+lambda_calculus/parser.out
+lambda_calculus/parsetab.py

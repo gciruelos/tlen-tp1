@@ -20,50 +20,76 @@ muestra aquí abajo.
 
 """
 
+class LambdaType:
+    def __init__(self, t):
+        self.type_ = t
+    def is_nat(self):
+        return self.type_ == 'Nat'
+    def is_bool(self):
+        return self.type_ == 'Bool'
+    def is_function(self):
+        return not (self.is_bool() or self.is_nat())
+    def type(self):
+        return self.type_
+    def __repr__(self):
+        return 'LambdaType<'+str(self.type_)+'>'
+
+class LBool:
+    def __init__(self, t):
+        self.value_ = t
+        self.type_ = LambdaType('Bool')
+    def type(self):
+        return self.type_
+    def value(self):
+        return self.value_
+    def __repr__(self):
+        return 'LambdaTerm<'+str(self.value_)+' : '+str(self.type_.type())+'>'
+
+class LNat:
+    def __init__(self, n):
+        self.value_ = n
+        self.type_ = LambdaType('Nat')
+    def type(self):
+        return self.type_
+    def value(self):
+        return self.value_
+    def __repr__(self):
+        return 'LambdaTerm<'+str(self.value_)+' : '+str(self.type_)+'>'
+
+
 tokens = (
     'TRUE',
     'FALSE',
+    'ZERO',
     'IF',
     'THEN',
     'ELSE',
-    'LAMBDA',
-    'COLON',
-    'DOT',
-    'ZERO',
-    'SUCC',
-    'PRED',
-    'ISZERO',
-    'LPARENS',
-    'RPARENS',
-    'VAR',  # ?? pensar mejor
-    'BOOL',
-    'NAT',
-    'ARROW',
+
 )
 
-t_TRUE = r'true'
-t_FALSE = r'false'
+
 t_IF = r'if'
 t_THEN = r'then'
 t_ELSE = r'else'
-t_LAMBDA = r'\\'
-t_COLON = r':'
-t_DOT = r'\.'
-t_ZERO = r'0'
-t_SUCC = r'succ'
-t_PRED = r'pred'
-t_ISZERO = r'iszero'
-t_LPARENS = r'\('
-t_RPARENS = r'\)'
-t_VAR = r'x'
 
-t_BOOL = r'Bool'
-t_NAT = r'Nat'
-t_ARROW = r'->'
 
 t_ignore = ' \t'
 
 
+def t_TRUE(t):
+    r'true'
+    t.value = LBool(True)
+    return t
+
+def t_FALSE(t):
+    r'false'
+    t.value = LBool(False)
+    return t
+
+def t_ZERO(t):
+    r'0'
+    t.value = LNat(0)
+    return t
 
 # Build the lexer
 lexer = lex.lex()
