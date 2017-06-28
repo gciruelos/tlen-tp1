@@ -1,0 +1,32 @@
+E -> F A
+   | L
+   | C
+
+C -> V
+   | true
+   | false
+   | 0
+   | iszero(E)
+   | succ(E)
+   | pred(E)
+   | if E else E then E
+
+F -> V
+   | (L)
+   | F A
+
+A -> C
+   | (L)
+   | (F A)
+
+L -> \ V : T . E
+
+V -> a | b | ... | z
+
+T -> T -> T'
+   | Bool
+   | Nat
+
+T' -> (T -> T')
+    | Bool
+    | Nat
