@@ -33,10 +33,6 @@ def p_expr_lambda(p):
     'expr : lambda'
     p[0] = p[1]
 
-def p_lambda(p):
-    'lambda : LAM VAR COLON type DOT expr'
-    p[0] = LLambda(p[2], p[4], p[6])
-
 def p_type_nat(p):
     'type : NAT'
     p[0] = LambdaType('Nat')
@@ -46,13 +42,55 @@ def p_expr_app(p):
     'expr : func arg'
     p[0] = p[1].eval_in(p[2])
 
+########################## FUNCTION ############################################
+#
+#  F -> V
+#     | (L)
+#     | F A
+#
+################################################################################
+
+def p_func_expr(p):
+    'func : VAR'
+    p[0] = p[1]
+
 def p_func_lambda(p):
     'func : LPARENS lambda RPARENS'
     p[0] = p[2]
 
+def p_func_app(p):
+    'func : func arg'
+    p[0] = p[1].eval_in(p[2])
+
+########################## ARGUMENT ############################################
+#
+#  F -> E
+#     | (L)
+#     | (F A)
+#
+################################################################################
+
 def p_arg_expr(p):
     'arg : expr'
     p[0] = p[1]
+
+def p_arg_lambda(p):
+    'arg : LPARENS lambda RPARENS'
+    p[0] = p[2]
+
+def p_arg_app(p):
+    'arg : LPARENS func arg RPARENS'
+    p[0] = p[2].eval_in(p[3])
+
+########################## LAMBDA ##############################################
+#
+#  L -> \ V : T . E
+#
+################################################################################
+
+def p_lambda(p):
+    'lambda : LAM VAR COLON type DOT expr'
+    p[0] = LLambda(p[2], p[4], p[6])
 
 
 def p_error(p):
