@@ -4,6 +4,19 @@ from .lexer import tokens, LambdaType, LBool, LNat, LLambda
 
 
 
+def p_expr_app(p):
+    'expr : func arg'
+    p[0] = p[1].eval_in(p[2])
+
+def p_expr_lambda(p):
+    'expr : lambda'
+    p[0] = p[1]
+
+def p_expr_cont(p):
+    'expr : cont'
+    p[0] = p[1]
+
+
 def p_cont_true(p):
     'cont : TRUE'
     p[0] = p[1]
@@ -30,19 +43,6 @@ def p_cont_var(p):
     'cont : VAR'
     p[0] = p[1]
 
-
-
-def p_expr_app(p):
-    'expr : func arg'
-    p[0] = p[1].eval_in(p[2])
-
-def p_expr_lambda(p):
-    'expr : lambda'
-    p[0] = p[1]
-
-def p_expr_cont(p):
-    'expr : cont'
-    p[0] = p[1]
 
 ########################## FUNCTION ############################################
 #
