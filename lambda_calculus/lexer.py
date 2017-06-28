@@ -43,7 +43,7 @@ class LBool:
     def value(self):
         return self.value_
     def __repr__(self):
-        return 'LambdaTerm<'+str(self.value_)+' : '+str(self.type_.type())+'>'
+        return 'LambdaExpr<'+str(self.value_)+' : '+str(self.type_.type())+'>'
 
 class LNat:
     def __init__(self, n):
@@ -54,8 +54,17 @@ class LNat:
     def value(self):
         return self.value_
     def __repr__(self):
-        return 'LambdaTerm<'+str(self.value_)+' : '+str(self.type_)+'>'
+        return 'LambdaExpr<'+str(self.value_)+' : '+str(self.type_)+'>'
 
+class LVar:
+    def __init__(self, v):
+        self.value_ = v
+    def type(self):
+        return None
+    def value(self):
+        return self.value_
+    def __repr__(self):
+        return 'LambdaExpr<'+str(self.value_)+'>'
 
 tokens = (
     'TRUE',
@@ -64,6 +73,7 @@ tokens = (
     'IF',
     'THEN',
     'ELSE',
+    'VAR'
 
 )
 
@@ -89,6 +99,12 @@ def t_FALSE(t):
 def t_ZERO(t):
     r'0'
     t.value = LNat(0)
+    return t
+
+def t_VAR(t):
+    r'[a-z]'
+    print(t)
+    t.value = LVar(t.value)
     return t
 
 # Build the lexer

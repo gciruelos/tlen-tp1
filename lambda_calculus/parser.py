@@ -4,20 +4,20 @@ from .lexer import tokens, LambdaType, LBool, LNat
 
 
 
-def p_term_true(p):
-    'term : TRUE'
+def p_expr_true(p):
+    'expr : TRUE'
     p[0] = p[1]
 
-def p_term_false(p):
-    'term : FALSE'
+def p_expr_false(p):
+    'expr : FALSE'
     p[0] = p[1]
 
-def p_term_zero(p):
-    'term : ZERO'
+def p_expr_zero(p):
+    'expr : ZERO'
     p[0] = p[1]
 
-def p_term_ifthenelse(p):
-    'term : IF term THEN term ELSE term'
+def p_expr_ifthenelse(p):
+    'expr : IF expr THEN expr ELSE expr'
     print(list(p))
     print(p[2])
     print(p[2].type())
@@ -26,6 +26,10 @@ def p_term_ifthenelse(p):
             p[0] = p[4]
         else:
             p[0] = p[6]
+
+def p_expr_var(p):
+    'expr : VAR'
+    p[0] = p[1]
 
 
 def p_error(p):
