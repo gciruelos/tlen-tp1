@@ -66,6 +66,16 @@ class LVar:
     def __repr__(self):
         return 'LambdaExpr<'+str(self.value_)+'>'
 
+class LLambda:
+    def __init__(self, x, t, m):
+        self.value_ = (x,t,m)
+    def type(self):
+        return None
+    def value(self):
+        return self.value_
+    def __repr__(self):
+        return 'LambdaExpr<'+str(self.value_)+'>'
+
 tokens = (
     'TRUE',
     'FALSE',
@@ -73,7 +83,13 @@ tokens = (
     'IF',
     'THEN',
     'ELSE',
-    'VAR'
+
+    'VAR',
+    'LAM',
+    'COLON',
+    'DOT',
+
+    'NAT',
 
 )
 
@@ -81,6 +97,11 @@ tokens = (
 t_IF = r'if'
 t_THEN = r'then'
 t_ELSE = r'else'
+
+t_LAM = r'\\'
+t_COLON = r':'
+t_DOT = r'.'
+t_NAT = r'Nat'
 
 
 t_ignore = ' \t'
@@ -103,7 +124,6 @@ def t_ZERO(t):
 
 def t_VAR(t):
     r'[a-z]'
-    print(t)
     t.value = LVar(t.value)
     return t
 

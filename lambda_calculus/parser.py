@@ -1,6 +1,6 @@
 """Parser LR(1) de calculadora."""
 import ply.yacc as yacc
-from .lexer import tokens, LambdaType, LBool, LNat
+from .lexer import tokens, LambdaType, LBool, LNat, LLambda
 
 
 
@@ -19,8 +19,6 @@ def p_expr_zero(p):
 def p_expr_ifthenelse(p):
     'expr : IF expr THEN expr ELSE expr'
     print(list(p))
-    print(p[2])
-    print(p[2].type())
     if p[2].type().is_bool():
         if p[2].value():
             p[0] = p[4]
@@ -30,6 +28,20 @@ def p_expr_ifthenelse(p):
 def p_expr_var(p):
     'expr : VAR'
     p[0] = p[1]
+
+def p_expr_lambda(p):
+    'expr : lambda'
+    p[0] = p[1]
+
+def p_lambda(p):
+    'lambda : LAM VAR COLON type DOT expr'
+    print(list(p))
+    p[0] = LLambda(p[2], p[4], p[6])
+
+def p_type_nat(p):
+    'type : NAT'
+    p[0] = LambdaType('Nat')
+
 
 
 def p_error(p):
