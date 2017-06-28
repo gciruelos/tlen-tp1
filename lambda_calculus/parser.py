@@ -4,20 +4,20 @@ from .lexer import tokens, LambdaType, LBool, LNat, LLambda
 
 
 
-def p_expr_true(p):
-    'expr : TRUE'
+def p_cont_true(p):
+    'cont : TRUE'
     p[0] = p[1]
 
-def p_expr_false(p):
-    'expr : FALSE'
+def p_cont_false(p):
+    'cont : FALSE'
     p[0] = p[1]
 
-def p_expr_zero(p):
-    'expr : ZERO'
+def p_cont_zero(p):
+    'cont : ZERO'
     p[0] = p[1]
 
-def p_expr_ifthenelse(p):
-    'expr : IF expr THEN expr ELSE expr'
+def p_cont_ifthenelse(p):
+    'cont : IF expr THEN expr ELSE expr'
     print(list(p))
     if p[2].type().is_bool():
         if p[2].value():
@@ -25,22 +25,24 @@ def p_expr_ifthenelse(p):
         else:
             p[0] = p[6]
 
-def p_expr_var(p):
-    'expr : VAR'
+
+def p_cont_var(p):
+    'cont : VAR'
     p[0] = p[1]
 
-def p_expr_lambda(p):
-    'expr : lambda'
-    p[0] = p[1]
-
-def p_type_nat(p):
-    'type : NAT'
-    p[0] = LambdaType('Nat')
 
 
 def p_expr_app(p):
     'expr : func arg'
     p[0] = p[1].eval_in(p[2])
+
+def p_expr_lambda(p):
+    'expr : lambda'
+    p[0] = p[1]
+
+def p_expr_cont(p):
+    'expr : cont'
+    p[0] = p[1]
 
 ########################## FUNCTION ############################################
 #
@@ -64,14 +66,14 @@ def p_func_app(p):
 
 ########################## ARGUMENT ############################################
 #
-#  F -> E
+#  A -> C
 #     | (L)
 #     | (F A)
 #
 ################################################################################
 
 def p_arg_expr(p):
-    'arg : expr'
+    'arg : cont'
     p[0] = p[1]
 
 def p_arg_lambda(p):
@@ -91,6 +93,11 @@ def p_arg_app(p):
 def p_lambda(p):
     'lambda : LAM VAR COLON type DOT expr'
     p[0] = LLambda(p[2], p[4], p[6])
+
+
+def p_type_nat(p):
+    'type : NAT'
+    p[0] = LambdaType('Nat')
 
 
 def p_error(p):
