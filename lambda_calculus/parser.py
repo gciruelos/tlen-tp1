@@ -1,6 +1,7 @@
-"""Parser LR(1) de calculadora."""
+"""Parser LR(1) de lambda."""
 import ply.yacc as yacc
-from .lexer import tokens, LambdaType, LBool, LNat, LLambda, LSucc, LApp, LIfThenElse,LIsZero
+from .lexer import tokens
+from .ast import TNat,TBool,TArrow, LBool, LNat, LLambda, LSucc, LApp, LIfThenElse,LIsZero
 
 
 ########################## EXPRESION ###########################################
@@ -101,15 +102,37 @@ def p_lambda(p):
     p[0] = LLambda(p[2], p[4], p[6])
 
 
+########################## TIPOS ###############################################
+#
+#  T -> T' -> T
+#     | T'
+#
+#  T' -> (T -> T')
+#      | Bool
+#      | Nat
+#
+################################################################################
 
 
-def p_type_nat(p):
-    'type : NAT'
-    p[0] = LambdaType('Nat')
+def p_type_arrow(p):
+    'type : typex ARROW type'
+    p[0] = TArrow(p[1], p[3])
 
-def p_type_bool(p):
-    'type : BOOL'
-    p[0] = LambdaType('Bool')
+def p_type_typex(p):
+    'type : typex'
+    p[0] = p[1]
+
+def p_typex_arrow(p):
+    'typex : LPARENS type ARROW typex RPARENS'
+    p[0] = TArrow(p[2], p[4])
+
+def p_typex_nat(p):
+    'typex : NAT'
+    p[0] = TNat()
+
+def p_typex_bool(p):
+    'typex : BOOL'
+    p[0] = TBool()
 
 
 def p_error(p):
@@ -123,6 +146,7 @@ parser = yacc.yacc(debug=True)
 
 def apply_parser(str):
     p = parser.parse(str)
+    p.add_judgement('hack', 'mega hack')
     print('Parseo!')
     while not p.is_value():
         print('Itero!')
