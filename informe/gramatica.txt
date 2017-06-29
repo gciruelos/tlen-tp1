@@ -12,7 +12,7 @@ C -> (E)
    | iszero(E)
    | succ(E)
    | pred(E)
-   | if E else E then S
+   | if E else E then C
 
 L -> \ V : T . E
 

@@ -3,7 +3,7 @@ import ply.yacc as yacc
 from .lexer import tokens, LambdaType, LBool, LNat, LLambda
 
 
-########################## EXPRESSIO############################################
+########################## EXPRESION ###########################################
 #
 #  E -> S L
 #     | S
@@ -34,7 +34,7 @@ def p_s_empty(p):
 #  cont -> (E)
 #     | Var
 #     | Val
-#     | if expr then expr else S
+#     | if expr then expr else cont
 #
 ################################################################################
 
@@ -55,7 +55,7 @@ def p_cont_zero(p):
     p[0] = p[1]
 
 def p_cont_ifthenelse(p):
-    'cont : IF expr THEN expr ELSE S'
+    'cont : IF expr THEN expr ELSE cont'
     print(list(p))
     if p[2].type().is_bool():
         if p[2].value():
