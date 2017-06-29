@@ -13,5 +13,6 @@ if len(argv) > 1:
         print(p.value(), ' : ', p.type())
     else:
         p = parse(argv[1])
-        print(p.value(), ' : ', p.type())
+        if p and p.value():
+            print(p.value(), ' : ', p.type())
 

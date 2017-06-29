@@ -1,4 +1,7 @@
 
+ERROR_EVALUACION = 'Ilegal: intento de evaluar {} sobre {}.'
+ERROR_EVALUACION_TIPOS = 'Ilegal: intento de evaluar {} sobre {}, que tiene tipo {} en vez de el esperado ({}).'
+
 ###############################################################################
 ################################### TIPOS #####################################
 ###############################################################################
@@ -16,6 +19,8 @@ class TBool:
         return other.is_bool()
     def __repr__(self):
         return 'Type<Bool>'
+    def __str__(self):
+        return 'Bool'
 
 class TNat:
     def __init__(self):
@@ -30,6 +35,8 @@ class TNat:
         return other.is_nat()
     def __repr__(self):
         return 'Type<Nat>'
+    def __str__(self):
+        return 'Nat'
 
 class TArrow:
     def __init__(self, d, c, parens=False):
@@ -49,6 +56,10 @@ class TArrow:
         return other.is_arrow() and other.codomain() == self.codomain_ and other.domain() == self.domain_
     def __repr__(self):
         return 'Type<'+str(self.domain_)+'->'+str(self.codomain_)+'>'
+    def __str__(self):
+        if self.domain_.is_arrow():
+            return '('+str(self.domain_)+') -> '+str(self.codomain_)
+        return str(self.domain_)+' -> '+str(self.codomain_)
 
 ###############################################################################
 ################################# TERMINOS ####################################
@@ -69,10 +80,15 @@ class LBool:
         return self.type_
     def replace(self, var, e):
         return self
+    def eval_in(self, other_expr):
+        print(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
+        return None  # ERROR!
     def is_value(self):
         return True
     def __repr__(self):
-        return 'Expr<'+str(self.value_)+'>'
+        return 'Expr<'+str(self.value_).lower()+'>'
+    def __str__(self):
+        return str(self.value_).lower()
 
 class LNat:
     def __init__(self, n):
@@ -89,10 +105,15 @@ class LNat:
         return self.type_
     def replace(self, var, e):
         return self
+    def eval_in(self, other_expr):
+        print(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
+        return None  # ERROR!
     def is_value(self):
         return True
     def __repr__(self):
         return 'Expr<'+str(self.value_)+'>'
+    def __str__(self):
+        return str(self.value_).lower()
 
 class LVar:
     def __init__(self, v):
@@ -120,6 +141,8 @@ class LVar:
         return False
     def __repr__(self):
         return 'Expr<'+str(self.value_)+'>'
+    def __str__(self):
+        return self.value_
 
 class LIsZero:
     def __init__(self, e):
@@ -135,23 +158,30 @@ class LIsZero:
         if reduced.type().is_nat():
             return LBool(reduced.get() == 0)
         else:
-            print('ERROR!')
-            pass  # ERROR!
+            print(ERROR_EVALUACION_TIPOS
+                    .format('iszero', str(reduced), reduced.type(), 'Nat'))
+            return None  # ERROR!
         self.value_ = reduced
     def type(self):
         reduced = self.value_.value()
         if reduced.type().is_nat():
             return TBool()
         else:
-            print('ERROR!')
-            pass  # ERROR!
+            print(ERROR_EVALUACION_TIPOS
+                    .format('iszero', str(reduced), reduced.type(), 'Nat'))
+            return None  # ERROR!
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
+    def eval_in(self, other_expr):
+        print(ERROR_EVLUACION.format('iszero', str(other_expr)))
+        return None  # ERROR!
     def is_value(self):
         return False
     def __repr__(self):
         return 'Expr<iszero('+str(self.value_)+')>'
+    def __str__(self):
+        return 'iszero('+str(self.value_)+')'
 
 class LSucc:
     def __init__(self, e):
@@ -167,23 +197,30 @@ class LSucc:
         if reduced.type().is_nat():
             return LNat(reduced.get() + 1)
         else:
-            pass  # ERROR!
+            print(ERROR_EVALUACION_TIPOS
+                    .format('succ', str(reduced), reduced.type(), 'Nat'))
+            return None  # ERROR!
         self.value_ = reduced
     def type(self):
         reduced = self.value_.value()
-        print(reduced)
         if reduced.type().is_nat():
             return TNat()
         else:
-            pass  # ERROR!
+            print(ERROR_EVALUACION_TIPOS
+                    .format('succ', str(reduced), reduced.type(), 'Nat'))
+            return None  # ERROR!
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
+    def eval_in(self, other_expr):
+        return None  # ERROR!
     def is_value(self):
         v = self.value_
         return v.is_value() and v.__class__.__name__ != 'LLambda'
     def __repr__(self):
         return 'Expr<succ('+str(self.value_)+')>'
+    def __str__(self):
+        return 'succ('+str(self.value_)+')'
 
 class LPred:
     def __init__(self, e):
@@ -199,17 +236,21 @@ class LPred:
     def value(self):
         self.reduce()
         reduced = self.value_
-        if reduced.type().is_nat() and reduced.get() > 0:
-            return LNat(reduced.get() - 1)
+        if reduced.type().is_nat():  # No hay que chequear reduced.get() > 0.
+            return LNat(max(0, reduced.get() - 1))
         else:
-            pass  # ERROR!
+            print(ERROR_EVALUACION_TIPOS
+                    .format('pred', str(reduced), reduced.type(), 'Nat'))
+            return None  # ERROR!
     def type(self):
         self.reduce()
         reduced = self.value_
         if reduced.type().is_nat():
             return TNat()
         else:
-            pass  # ERROR!
+            print(ERROR_EVALUACION_TIPOS
+                    .format('pred', str(reduced), reduced.type(), 'Nat'))
+            return None  # ERROR!
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
@@ -219,6 +260,8 @@ class LPred:
         return False
     def __repr__(self):
         return 'Expr<pred('+str(self.value_)+')>'
+    def __str__(self):
+        return 'pred('+str(self.value_)+')'
 
 class LIfThenElse:
     def __init__(self, guarda, case_true, case_false):
@@ -241,14 +284,19 @@ class LIfThenElse:
         reduced_guarda = self.value_[0]
         reduced_true = self.value_[1]
         reduced_false = self.value_[2]
-        if reduced_guarda.type().is_bool():  # chequear same type
-            if reduced_guarda.get():
+        if reduced_guarda.type().is_bool():
+            if reduced_true.type() != reduced_false.type():
+                print('Ilegal: distintos tipos en el cuerpo del if: {} y {} tienen distintos tipos ({} y {} respectivamente).'
+                    .format(str(reduced_true), str(reduced_false), reduced_true.type(), reduced_false.type()))
+                return None  # ERROR!
+            elif reduced_guarda.get():
                 return reduced_true
             else:
                 return reduced_false
         else:
-            print('ERROR!')
-            pass  # ERROR!
+            print('Ilegal: se esperaba un Bool en la guarda del if y se encontro {} (de tipo {}).'
+                    .format(str(reduced_guarda), reduced_guarda.type()))
+            return None  # ERROR!
     def type(self):
         self.reduce()
         return self.value_[1].type()
@@ -263,6 +311,8 @@ class LIfThenElse:
         return False
     def __repr__(self):
         return 'Expr<if'+str(self.value_)+'>'
+    def __str__(self):
+        return 'if '+str(self.value_[0])+' then '+str(self.value_[1])+' else '+str(self.value_[2])
 
 class LLambda:
     def __init__(self, x, t, m):
@@ -293,6 +343,8 @@ class LLambda:
         return True
     def __repr__(self):
         return 'Expr<\\'+str(self.value_)+'>'
+    def __str__(self):
+        return '\\ '+str(self.value_[0])+' : '+str(self.value_[1])+' . '+str(self.value_[2])
 
 class LApp:
     def __init__(self, fun, arg):
@@ -327,4 +379,6 @@ class LApp:
         return False
     def __repr__(self):
         return 'Expr<@'+str(self.value_)+'>'
+    def __str__(self):
+        return str(self.value_[0])+' '+str(self.value_[1])
 

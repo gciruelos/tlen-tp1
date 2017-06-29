@@ -1,7 +1,7 @@
 #! coding: utf-8
 """Calculator lexer example."""
 import ply.lex as lex
-from .ast import TNat,TBool,TArrow, LBool, LNat, LVar, LLambda, LSucc, LApp, LIfThenElse,LIsZero
+from .ast import TNat,TBool,TArrow, LBool, LNat, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
 
 """
 Lista de tokens

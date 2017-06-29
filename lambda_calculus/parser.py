@@ -1,7 +1,7 @@
 """Parser LR(1) de lambda."""
 import ply.yacc as yacc
 from .lexer import tokens
-from .ast import TNat,TBool,TArrow, LBool, LNat, LLambda, LSucc, LApp, LIfThenElse,LIsZero
+from .ast import TNat,TBool,TArrow, LBool, LNat, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
 
 
 ########################## EXPRESION ###########################################
@@ -146,11 +146,9 @@ parser = yacc.yacc(debug=True)
 
 def apply_parser(str):
     p = parser.parse(str)
-    p.add_judgement('hack', 'mega hack')
-    print('Parseo!')
-    while not p.is_value():
-        print('Itero!')
-        print(p)
-        print(p.value(), ' : ', p.type())
+    p.add_judgement('h4x0r', 'turururu')  # Llamo a add judgement del padre asi
+                                          # propaga todos los judgements hacia
+                                          # abajo.
+    while p is not None and not p.is_value():
         p = p.value()
     return p
