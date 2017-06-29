@@ -5,7 +5,7 @@ S -> S C
    | λ
 
 C -> (E)
-   |var
+   | var
    | true
    | false
    | 0
