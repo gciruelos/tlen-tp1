@@ -91,6 +91,10 @@ def t_VAR(t):
     t.value = LVar(t.value)
     return t
 
+def t_error(t):
+    print('Error de sintaxis (tokenizador): caracter ilegal "{}" en la posicion {}.'.format(t.value[0], lexer.lexpos))
+    exit(0)
+
 # Build the lexer
 lexer = lex.lex()
 def apply_lexer(string):

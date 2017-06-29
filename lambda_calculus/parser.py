@@ -136,9 +136,8 @@ def p_typex_bool(p):
 
 
 def p_error(p):
-    print("Hubo un error en el parseo.")
-
-    parser.restart()
+    print('Error de sintaxis: "{}" no esperado en la posicion {}.'.format(p.value, p.lexpos))
+    exit(1)
 
 
 # Build the parser
