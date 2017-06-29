@@ -15,9 +15,8 @@ C -> var
 
 L -> \ V : T . E
 
-T -> T -> T'
-   | Bool
-   | Nat
+T -> T' -> T
+   | T'
 
 T' -> (T -> T')
     | Bool
