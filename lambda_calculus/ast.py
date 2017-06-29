@@ -126,10 +126,14 @@ class LVar:
     def value(self):
         if self.value_ in self.env_:
             return self
+        print('Ilegal: variable libre '+self.value_+'.')
+        exit(1)
         return None
     def type(self):
         if self.value_ in self.env_:
             return self.env_[self.value_]
+        print('Ilegal: variable libre '+self.value_+'.')
+        exit(1)
         return None
     def replace(self, var, e):
         if var == self.value_:
