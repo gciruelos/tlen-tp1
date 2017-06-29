@@ -1,6 +1,6 @@
 """Parser LR(1) de calculadora."""
 import ply.yacc as yacc
-from .lexer import tokens, LambdaType, LBool, LNat, LLambda
+from .lexer import tokens, LambdaType, LBool, LNat, LLambda, LSucc, LApp, LIfThenElse,LIsZero
 
 
 ########################## EXPRESION ###########################################
@@ -12,9 +12,15 @@ from .lexer import tokens, LambdaType, LBool, LNat, LLambda
 
 def p_expr_s_lambda(p):
     'expr : S lambda'
+    if p[1] is None:
+        p[0] = p[2]
+    else:
+        p[0] = LApp(p[1], p[2])
+
 
 def p_expr_s(p):
     'expr : S'
+    p[0] = p[1]
 
 ########################## S ###################################################
 #
@@ -25,6 +31,10 @@ def p_expr_s(p):
 
 def p_s_factor(p):
     'S : S cont'
+    if p[1] is None:
+        p[0] = p[2]
+    else:
+        p[0] = LApp(p[1], p[2])
 
 def p_s_empty(p):
     'S : '
@@ -45,6 +55,10 @@ def p_s_empty(p):
 
 def p_cont_expr(p):
     'cont : LPARENS expr RPARENS'
+    p[0] = p[2]
+
+def p_cont_var(p):
+    'cont : VAR'
     p[0] = p[1]
 
 def p_cont_true(p):
@@ -59,60 +73,22 @@ def p_cont_zero(p):
     'cont : ZERO'
     p[0] = p[1]
 
+def p_cont_iszero(p):
+    'cont : ISZERO LPARENS expr RPARENS'
+    p[0] = LIsZero(p[3])
+
+def p_cont_succ(p):
+    'cont : SUCC LPARENS expr RPARENS'
+    p[0] = LSucc(p[3])
+
+def p_cont_pred(p):
+    'cont : PRED LPARENS expr RPARENS'
+    p[0] = LPred(p[3])
+
 def p_cont_ifthenelse(p):
     'cont : IF expr THEN expr ELSE cont'
-    print(list(p))
-    if p[2].type().is_bool():
-        if p[2].value():
-            p[0] = p[4]
-        else:
-            p[0] = p[6]
+    p[0] = LIfThenElse(p[2], p[4], p[6])
 
-
-def p_cont_var(p):
-    'cont : VAR'
-    p[0] = p[1]
-
-
-########################### FUNCTION ############################################
-##
-##  F -> V
-##     | (L)
-##     | F A
-##
-#################################################################################
-#
-#def p_func_expr(p):
-#    'func : VAR'
-#    p[0] = p[1]
-#
-#def p_func_lambda(p):
-#    'func : LPARENS lambda RPARENS'
-#    p[0] = p[2]
-#
-#def p_func_app(p):
-#    'func : func arg'
-#    p[0] = p[1].eval_in(p[2])
-#
-########################### ARGUMENT ############################################
-##
-##  A -> C
-##     | (L)
-##     | (F A)
-##
-#################################################################################
-#
-#def p_arg_expr(p):
-#    'arg : cont'
-#    p[0] = p[1]
-#
-#def p_arg_lambda(p):
-#    'arg : LPARENS lambda RPARENS'
-#    p[0] = p[2]
-#
-#def p_arg_app(p):
-#    'arg : LPARENS func arg RPARENS'
-#    p[0] = p[2].eval_in(p[3])
 
 ########################## LAMBDA ##############################################
 #
@@ -125,9 +101,15 @@ def p_lambda(p):
     p[0] = LLambda(p[2], p[4], p[6])
 
 
+
+
 def p_type_nat(p):
     'type : NAT'
     p[0] = LambdaType('Nat')
+
+def p_type_bool(p):
+    'type : BOOL'
+    p[0] = LambdaType('Bool')
 
 
 def p_error(p):
@@ -141,4 +123,10 @@ parser = yacc.yacc(debug=True)
 
 def apply_parser(str):
     p = parser.parse(str)
+    print('Parseo!')
+    while not p.is_value():
+        print('Itero!')
+        print(p)
+        print(p.value(), ' : ', p.type())
+        p = p.value()
     return p
