@@ -1,27 +1,19 @@
-E -> F A
-   | L
-   | C
+E -> S L
+   | S
 
-C -> V
+S -> S C
+   | λ
+
+C -> var
    | true
    | false
    | 0
    | iszero(E)
    | succ(E)
    | pred(E)
-   | if E else E then E
-
-F -> V
-   | (L)
-   | F A
-
-A -> C
-   | (L)
-   | (F A)
+   | if E else E then S
 
 L -> \ V : T . E
-
-V -> a | b | ... | z
 
 T -> T -> T'
    | Bool
