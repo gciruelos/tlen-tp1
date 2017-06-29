@@ -103,7 +103,7 @@ tokens = (
     'LPARENS',
     'RPARENS',
 
-
+    'ARROW'
 )
 
 
@@ -119,6 +119,7 @@ t_NAT = r'Nat'
 t_LPARENS = r'\('
 t_RPARENS = r'\)'
 
+t_ARROW = r'->'
 
 t_ignore = ' \t'
 
@@ -145,7 +146,6 @@ def t_VAR(t):
 
 # Build the lexer
 lexer = lex.lex()
-
 def apply_lexer(string):
     """Aplica el lexer al string dado."""
     lexer.input(string)
