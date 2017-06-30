@@ -33,20 +33,20 @@
   xleftmargin=0.1in,
   stepnumber=1,
   numbers=left,
-  numbersep=5pt,
+%  numbersep=5pt,
   numberstyle=\ttfamily\tiny\color[gray]{0.3},
   belowcaptionskip=\bigskipamount,
   captionpos=b,
   escapeinside={*'}{'*},
-  language=Prolog,
+%  language=Prolog,
   tabsize=1,
-  emphstyle={\bf},
-  commentstyle=\it,
-  stringstyle=\mdseries\rmfamily,
+%  emphstyle={\bf},
+%  commentstyle=\it,
+%  stringstyle=\mdseries\rmfamily,
   showspaces=false,
-  keywordstyle=\bfseries\rmfamily,
-  columns=flexible,
-  basicstyle=\small\scriptsize,
+%  keywordstyle=\bfseries\rmfamily,
+%  columns=flexible,
+%  basicstyle=\small\scriptsize,
   showstringspaces=false,
   morecomment=[l]\%,
 }
@@ -75,8 +75,33 @@
 
 \newpage
 \section{Introducción}
+\section{Gramática}
+$$ E \rightarrow S L | S  $$
+$$ S \rightarrow S C   | \lambda  $$
+$$ C \rightarrow (E) $$
+$$ C \rightarrow var $$
+$$ C \rightarrow true $$
+$$ C \rightarrow false $$
+$$ C \rightarrow 0 $$
+$$ C \rightarrow iszero(E) $$
+$$ C \rightarrow succ(E) $$
+$$ C \rightarrow pred(E) $$
+$$ C \rightarrow if E else E then C $$
+$$ L \rightarrow \ V : T . E $$
+$$ T \rightarrow T' -> T $$
+$$ T \rightarrow T' $$
+$$ T' \rightarrow (T -> T') $$
+$$ T' \rightarrow Bool $$
+$$ T' \rightarrow Nat $$
+
+
 \section{Código}
-%	\lstinputlisting[language=Prolog,label=tipos]{../src/esqueleto.pl}      
+\subsection{lexer.py}
+\lstinputlisting[language=Python,label=tipos]{../lambda_calculus/lexer.py}      
+\newpage
+\subsection{parser.py}
+\lstinputlisting[language=Python,label=tipos]{../lambda_calculus/parser.py}      
+
 %hay que arreglar lo de la numeracion
 %\newpage
 %\setboolean{@twoside}{false}

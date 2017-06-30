@@ -1,24 +1,24 @@
 E -> S L
-   | S
+| S
 
 S -> S C
-   | λ
+| λ
 
 C -> (E)
-   | var
-   | true
-   | false
-   | 0
-   | iszero(E)
-   | succ(E)
-   | pred(E)
-   | if E else E then C
+| var
+| true
+| false
+| 0
+| iszero(E)
+| succ(E)
+| pred(E)
+| if E else E then C
 
 L -> \ V : T . E
 
 T -> T' -> T
-   | T'
+| T'
 
 T' -> (T -> T')
-    | Bool
-    | Nat
+| Bool
+| Nat
