@@ -1,6 +1,6 @@
 
-ERROR_EVALUACION = 'Ilegal: intento de evaluar {} sobre {}.'
-ERROR_EVALUACION_TIPOS = 'Ilegal: intento de evaluar {} sobre {}, que tiene tipo {} en vez de el esperado ({}).'
+ERROR_EVALUACION = 'Ilegal: se intenta aplicarle {} a {}.'
+ERROR_EVALUACION_TIPOS = 'Ilegal: se intenta realizar {1}({0}), que tiene tipo {2} en vez de {3}.'
 
 ###############################################################################
 ################################### TIPOS #####################################
@@ -161,8 +161,7 @@ class LIsZero:
             return LBool(reduced.get() == 0)
         else:
             exit(ERROR_EVALUACION_TIPOS
-                    .format('iszero', str(reduced), reduced.type(), 'Nat'))
-            return None  # ERROR!
+                    .format(str(reduced), 'iszero', reduced.type(), 'Nat'))
     def type(self):
         self.reduce()
         reduced = self.value_
@@ -170,12 +169,12 @@ class LIsZero:
             return TBool()
         else:
             exit(ERROR_EVALUACION_TIPOS
-                    .format('iszero', str(reduced), reduced.type(), 'Nat'))
+                    .format(str(reduced), 'iszero', reduced.type(), 'Nat'))
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        exit(ERROR_EVALUACION.format('iszero', str(other_expr)))
+        exit(ERROR_EVALUACION.format(str(other_expr), 'iszero'))
     def is_value(self):
         return False
     def __repr__(self):
@@ -205,7 +204,6 @@ class LSucc:
         else:
             exit(ERROR_EVALUACION_TIPOS
                     .format('succ', str(reduced), reduced.type(), 'Nat'))
-            return None  # ERROR!
     def type(self):
         self.reduce()
         reduced = self.value_
@@ -249,7 +247,7 @@ class LPred:
                 return reduced.minus_one()
         else:
             exit(ERROR_EVALUACION_TIPOS
-                    .format('pred', str(reduced), reduced.type(), 'Nat'))
+                    .format(str(reduced), 'pred', reduced.type(), 'Nat'))
     def type(self):
         self.reduce()
         reduced = self.value_
@@ -257,12 +255,12 @@ class LPred:
             return TNat()
         else:
             exit(ERROR_EVALUACION_TIPOS
-                    .format('pred', str(reduced), reduced.type(), 'Nat'))
+                    .format(str(reduced), 'pred', reduced.type(), 'Nat'))
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        exit(ERROR_EVALUACION.format('pred', str(other_expr)))
+        exit(ERROR_EVALUACION.format(str(other_expr), 'pred'))
     def is_value(self):
         return False
     def __repr__(self):
@@ -299,14 +297,16 @@ class LIfThenElse:
         reduced_false = self.value_[2]
         if reduced_guarda.type().is_bool():
             if reduced_true.type() != reduced_false.type():
-                exit('Ilegal: distintos tipos en el cuerpo del if: {} y {} tienen distintos tipos ({} y {} respectivamente).'
-                    .format(str(reduced_true), str(reduced_false), reduced_true.type(), reduced_false.type()))
+                exit('Ilegal: distintos tipos en el cuerpo del if: '
+                     '{} y {} tienen distintos tipos ({} y {} respectivamente).'
+                    .format(str(reduced_true), str(reduced_false),
+                            reduced_true.type(), reduced_false.type()))
             elif reduced_guarda.get():
                 return reduced_true
             else:
                 return reduced_false
         else:
-            exit('Ilegal: se esperaba un Bool en la guarda del if y se encontro {} (de tipo {}).'
+            exit('Ilegal: se esperaba un Bool en la guarda del if y se encontró {}, de tipo {}.'
                     .format(str(reduced_guarda), reduced_guarda.type()))
     def type(self):
         self.reduce()
@@ -349,6 +349,11 @@ class LLambda:
                 self.value_[2].replace(var, e))
         return self
     def eval_in(self, other_expr):
+        if self.value_[1] != other_expr.type():
+            exit('Ilegal: el lambda tiene dominio {} y se le está pasando un '
+                 'parámetro ({}) de tipo {}.'
+                .format(str(self.value_[1]), str(other_expr),
+                        other_expr.type()))
         return self.value_[2].replace(self.value_[0].get(), other_expr)
     def is_value(self):
         return True
@@ -379,7 +384,10 @@ class LApp:
         t1 = self.value_[1].type()
         if t0.is_arrow() and t0.domain() == t1:
             return t0.codomain()
-        return None
+        exit('Ilegal: la función {} tiene dominio {} y se le está pasando un'
+             'parámetro ({}) de tipo {}.'
+            .format(str(self.value_[0]), t0.domain(),
+                    str(self.value_[1]), self.value_[1].type()))
     def replace(self, var, e):
         self.value_ = (self.value_[0].replace(var, e),
                        self.value_[1].replace(var, e))

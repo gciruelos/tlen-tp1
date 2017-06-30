@@ -2,6 +2,7 @@
 """Calculator lexer example."""
 import ply.lex as lex
 from .ast import TNat,TBool,TArrow, LBool, LZero, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
+from difflib import get_close_matches
 
 """
 Lista de tokens
@@ -108,9 +109,11 @@ def t_VAR(t):
 
 def t_error(t):
     errStr = t.value.split(' ', 1)[0]
-    print('Error de sintaxis: la cadena "{}" no puede ser tokenizada.\n'
-          'Habrás querido usar "{}"?'
-          .format(errStr, *get_close_matches(errStr, tokenizables, n = 1)))
+    print('Error de sintaxis: la cadena "{}" no puede ser tokenizada.'
+          .format(errStr))
+    if get_close_matches(errStr, tokenizables, n = 1):
+        print('Habrás querido usar "{}"?'
+              .format(*get_close_matches(errStr, tokenizables, n = 1)))
     exit(0)
 
 # Build the lexer
