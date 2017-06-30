@@ -1,0 +1,13 @@
+0
+true
+if true then 0 else false
+\x:Bool.if x then false else true
+\x:Nat.succ(0)
+\z:Nat.z
+(\x:Bool.succ(x)) true
+succ(succ(succ(0)))
+x                          # no imprime absolutamente nada
+succ(succ(pred(0)))
+0 0
+\x:Nat->Nat.\y:Nat.(\z:Bool.if z then x y else 0)
+(\x:Nat->Nat.\y:Nat.(\z:Bool.if z then x y else 0)) (\j:Nat.succ(j)) succ(succ(succ(succ(succ(succ(succ(succ(0)))))))) true

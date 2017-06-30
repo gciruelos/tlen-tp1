@@ -6,8 +6,13 @@ from sys import argv
 if len(argv) > 1:
     if argv[1] == '--debug':
         string = argv[2]
-        print(lex(string))
-        print(parse(string))
+        # print(lex(string))
+        p = parse(string)
+        print('Fin.')
+        print(p)
+        print(p.value(), ' : ', p.type())
     else:
-        print(parse(argv[1]))
+        p = parse(argv[1])
+        if p and p.value():
+            print(p.value(), ' : ', p.type())
 

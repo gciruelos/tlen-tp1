@@ -1,6 +1,8 @@
 #! coding: utf-8
 """Calculator lexer example."""
 import ply.lex as lex
+from .ast import TNat,TBool,TArrow, LBool, LZero, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
+from difflib import get_close_matches
 
 """
 Lista de tokens
@@ -20,43 +22,6 @@ muestra aquí abajo.
 
 """
 
-class LambdaType:
-    def __init__(self, t):
-        self.type_ = t
-    def is_nat(self):
-        return self.type_ == 'Nat'
-    def is_bool(self):
-        return self.type_ == 'Bool'
-    def is_function(self):
-        return not (self.is_bool() or self.is_nat())
-    def type(self):
-        return self.type_
-    def __repr__(self):
-        return 'LambdaType<'+str(self.type_)+'>'
-
-class LBool:
-    def __init__(self, t):
-        self.value_ = t
-        self.type_ = LambdaType('Bool')
-    def type(self):
-        return self.type_
-    def value(self):
-        return self.value_
-    def __repr__(self):
-        return 'LambdaTerm<'+str(self.value_)+' : '+str(self.type_.type())+'>'
-
-class LNat:
-    def __init__(self, n):
-        self.value_ = n
-        self.type_ = LambdaType('Nat')
-    def type(self):
-        return self.type_
-    def value(self):
-        return self.value_
-    def __repr__(self):
-        return 'LambdaTerm<'+str(self.value_)+' : '+str(self.type_)+'>'
-
-
 tokens = (
     'TRUE',
     'FALSE',
@@ -65,6 +30,22 @@ tokens = (
     'THEN',
     'ELSE',
 
+    'VAR',
+    'LAM',
+    'COLON',
+    'DOT',
+
+    'LPARENS',
+    'RPARENS',
+
+    'ISZERO',
+    'SUCC',
+    'PRED',
+
+    'ARROW',
+    'NAT',
+    'BOOL',
+
 )
 
 
@@ -72,9 +53,38 @@ t_IF = r'if'
 t_THEN = r'then'
 t_ELSE = r'else'
 
+t_LAM = r'\\'
+t_COLON = r':'
+t_DOT = r'\.'
+
+t_LPARENS = r'\('
+t_RPARENS = r'\)'
+
+t_ISZERO = r'iszero'
+t_SUCC = r'succ'
+t_PRED = r'pred'
+
+t_ARROW = r'->'
+t_NAT = r'Nat'
+t_BOOL = r'Bool'
 
 t_ignore = ' \t'
 
+tokenizables = [
+'if',
+'then',
+'else',
+'\\',
+':',
+'.',
+'(',
+')',
+'iszero',
+'succ',
+'pred',
+'->',
+'Nat',
+'Bool']
 
 def t_TRUE(t):
     r'true'
@@ -88,12 +98,26 @@ def t_FALSE(t):
 
 def t_ZERO(t):
     r'0'
-    t.value = LNat(0)
+    t.value = LZero()
     return t
+
+# Sin i,s,p
+def t_VAR(t):
+    r'[abcjxyz]'
+    t.value = LVar(t.value)
+    return t
+
+def t_error(t):
+    errStr = t.value.split(' ', 1)[0]
+    print('Error de sintaxis: la cadena "{}" no puede ser tokenizada.'
+          .format(errStr))
+    if get_close_matches(errStr, tokenizables, n = 1):
+        print('Habrás querido usar "{}"?'
+              .format(*get_close_matches(errStr, tokenizables, n = 1)))
+    exit(0)
 
 # Build the lexer
 lexer = lex.lex()
-
 def apply_lexer(string):
     """Aplica el lexer al string dado."""
     lexer.input(string)
