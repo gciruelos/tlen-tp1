@@ -142,7 +142,7 @@ def p_error(p):
     if p is not None:
         exit('Error de sintaxis: "{}" no esperado en la posicion {}.'.format(p.value, p.lexpos))
     else:
-        exit('Error de sintaxis: fin de linea no esperado.')
+        exit('Error de sintaxis: fin de linea no esperado ("$").')
 
 
 
