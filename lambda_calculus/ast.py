@@ -219,7 +219,7 @@ class LSucc:
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        exit(ERROR_EVALUACION.format(str(self), str(other_expr)))
+        exit(ERROR_EVALUACION.format(str(other_expr), str(self)))
     def is_value(self):
         v = self.value_
         return v.is_value() and v.__class__.__name__ != 'LLambda'
