@@ -81,8 +81,7 @@ class LBool:
     def replace(self, var, e):
         return self
     def eval_in(self, other_expr):
-        print(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
-        return None  # ERROR!
+        exit(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
     def is_value(self):
         return True
     def __repr__(self):
@@ -106,8 +105,7 @@ class LZero:
     def replace(self, var, e):
         return self
     def eval_in(self, other_expr):
-        print(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
-        return None  # ERROR!
+        exit(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
     def is_value(self):
         return True
     def __repr__(self):
@@ -126,15 +124,11 @@ class LVar:
     def value(self):
         if self.value_ in self.env_:
             return self
-        print('Ilegal: variable libre '+self.value_+'.')
-        exit(1)
-        return None
+        exit('Ilegal: variable libre '+self.value_+'.')
     def type(self):
         if self.value_ in self.env_:
             return self.env_[self.value_]
-        print('Ilegal: variable libre '+self.value_+'.')
-        exit(1)
-        return None
+        exit('Ilegal: variable libre '+self.value_+'.')
     def replace(self, var, e):
         if var == self.value_:
             return e
@@ -166,7 +160,7 @@ class LIsZero:
         if reduced.type().is_nat():
             return LBool(reduced.get() == 0)
         else:
-            print(ERROR_EVALUACION_TIPOS
+            exit(ERROR_EVALUACION_TIPOS
                     .format('iszero', str(reduced), reduced.type(), 'Nat'))
             return None  # ERROR!
     def type(self):
@@ -175,15 +169,13 @@ class LIsZero:
         if reduced.type().is_nat():
             return TBool()
         else:
-            print(ERROR_EVALUACION_TIPOS
+            exit(ERROR_EVALUACION_TIPOS
                     .format('iszero', str(reduced), reduced.type(), 'Nat'))
-            return None  # ERROR!
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        print(ERROR_EVLUACION.format('iszero', str(other_expr)))
-        return None  # ERROR!
+        exit(ERROR_EVALUACION.format('iszero', str(other_expr)))
     def is_value(self):
         return False
     def __repr__(self):
@@ -211,7 +203,7 @@ class LSucc:
         if reduced.type().is_nat():
             return LSucc(reduced)
         else:
-            print(ERROR_EVALUACION_TIPOS
+            exit(ERROR_EVALUACION_TIPOS
                     .format('succ', str(reduced), reduced.type(), 'Nat'))
             return None  # ERROR!
     def type(self):
@@ -220,14 +212,13 @@ class LSucc:
         if reduced.type().is_nat():
             return TNat()
         else:
-            print(ERROR_EVALUACION_TIPOS
+            exit(ERROR_EVALUACION_TIPOS
                     .format('succ', str(reduced), reduced.type(), 'Nat'))
-            return None  # ERROR!
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        return None  # ERROR!
+        exit(ERROR_EVALUACION.format('succ', str(other_expr)))
     def is_value(self):
         v = self.value_
         return v.is_value() and v.__class__.__name__ != 'LLambda'
@@ -257,23 +248,21 @@ class LPred:
             else:
                 return reduced.minus_one()
         else:
-            print(ERROR_EVALUACION_TIPOS
+            exit(ERROR_EVALUACION_TIPOS
                     .format('pred', str(reduced), reduced.type(), 'Nat'))
-            return None  # ERROR!
     def type(self):
         self.reduce()
         reduced = self.value_
         if reduced.type().is_nat():
             return TNat()
         else:
-            print(ERROR_EVALUACION_TIPOS
+            exit(ERROR_EVALUACION_TIPOS
                     .format('pred', str(reduced), reduced.type(), 'Nat'))
-            return None  # ERROR!
     def replace(self, var, e):
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        return None  # ERROR!
+        exit(ERROR_EVALUACION.format('pred', str(other_expr)))
     def is_value(self):
         return False
     def __repr__(self):
@@ -310,17 +299,15 @@ class LIfThenElse:
         reduced_false = self.value_[2]
         if reduced_guarda.type().is_bool():
             if reduced_true.type() != reduced_false.type():
-                print('Ilegal: distintos tipos en el cuerpo del if: {} y {} tienen distintos tipos ({} y {} respectivamente).'
+                exit('Ilegal: distintos tipos en el cuerpo del if: {} y {} tienen distintos tipos ({} y {} respectivamente).'
                     .format(str(reduced_true), str(reduced_false), reduced_true.type(), reduced_false.type()))
-                return None  # ERROR!
             elif reduced_guarda.get():
                 return reduced_true
             else:
                 return reduced_false
         else:
-            print('Ilegal: se esperaba un Bool en la guarda del if y se encontro {} (de tipo {}).'
+            exit('Ilegal: se esperaba un Bool en la guarda del if y se encontro {} (de tipo {}).'
                     .format(str(reduced_guarda), reduced_guarda.type()))
-            return None  # ERROR!
     def type(self):
         self.reduce()
         return self.value_[1].type()
