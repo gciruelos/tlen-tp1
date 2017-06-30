@@ -1,8 +1,11 @@
 """Parser LR(1) de lambda."""
 import ply.yacc as yacc
 from .lexer import tokens
-from .ast import TNat,TBool,TArrow, LBool, LNat, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
+from .ast import TNat,TBool,TArrow, LBool, LZero, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
 
+precedence = (
+    ('right', 'ARROW'),
+)
 
 ########################## EXPRESION ###########################################
 #
@@ -148,6 +151,8 @@ def apply_parser(str):
     p.add_judgement('h4x0r', 'turururu')  # Llamo a add judgement del padre asi
                                           # propaga todos los judgements hacia
                                           # abajo.
+    # print(repr(p))
     while p is not None and not p.is_value():
         p = p.value()
+        # print(repr(p))
     return p

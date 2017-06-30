@@ -1,7 +1,7 @@
 #! coding: utf-8
 """Calculator lexer example."""
 import ply.lex as lex
-from .ast import TNat,TBool,TArrow, LBool, LNat, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
+from .ast import TNat,TBool,TArrow, LBool, LZero, LVar, LLambda, LSucc, LPred, LApp, LIfThenElse,LIsZero
 
 """
 Lista de tokens
@@ -82,7 +82,7 @@ def t_FALSE(t):
 
 def t_ZERO(t):
     r'0'
-    t.value = LNat(0)
+    t.value = LZero()
     return t
 
 # Sin i,s,p

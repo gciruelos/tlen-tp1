@@ -90,15 +90,15 @@ class LBool:
     def __str__(self):
         return str(self.value_).lower()
 
-class LNat:
-    def __init__(self, n):
-        self.value_ = n
+class LZero:
+    def __init__(self):
+        self.value_ = 0
         self.type_ = TNat()
         self.env_ = {}
     def add_judgement(self, var, t):
         self.env_[var] = t
     def get(self):
-        return self.value_
+        return 0
     def value(self):
         return self
     def type(self):
@@ -157,17 +157,21 @@ class LIsZero:
         self.value_.add_judgement(var, t)
     def get(self):
         return self.value_
+    def reduce(self):
+        while not self.value_.is_value():
+            self.value_ = self.value_.value()
     def value(self):
-        reduced = self.value_.value()
+        self.reduce()
+        reduced = self.value_
         if reduced.type().is_nat():
             return LBool(reduced.get() == 0)
         else:
             print(ERROR_EVALUACION_TIPOS
                     .format('iszero', str(reduced), reduced.type(), 'Nat'))
             return None  # ERROR!
-        self.value_ = reduced
     def type(self):
-        reduced = self.value_.value()
+        self.reduce()
+        reduced = self.value_
         if reduced.type().is_nat():
             return TBool()
         else:
@@ -195,18 +199,24 @@ class LSucc:
         self.env_[var] = t
         self.value_.add_judgement(var, t)
     def get(self):
+        return self.value_.get() + 1
+    def minus_one(self):
         return self.value_
+    def reduce(self):
+        while not self.value_.is_value():
+            self.value_ = self.value_.value()
     def value(self):
-        reduced = self.value_.value()
+        self.reduce()
+        reduced = self.value_
         if reduced.type().is_nat():
-            return LNat(reduced.get() + 1)
+            return LSucc(reduced)
         else:
             print(ERROR_EVALUACION_TIPOS
                     .format('succ', str(reduced), reduced.type(), 'Nat'))
             return None  # ERROR!
-        self.value_ = reduced
     def type(self):
-        reduced = self.value_.value()
+        self.reduce()
+        reduced = self.value_
         if reduced.type().is_nat():
             return TNat()
         else:
@@ -236,12 +246,16 @@ class LPred:
     def get(self):
         return self.value_
     def reduce(self):
-        self.value_ = self.value_.value()
+        while not self.value_.is_value():
+            self.value_ = self.value_.value()
     def value(self):
         self.reduce()
         reduced = self.value_
         if reduced.type().is_nat():  # No hay que chequear reduced.get() > 0.
-            return LNat(max(0, reduced.get() - 1))
+            if reduced.get() <= 1:
+                return LZero()
+            else:
+                return reduced.minus_one()
         else:
             print(ERROR_EVALUACION_TIPOS
                     .format('pred', str(reduced), reduced.type(), 'Nat'))
@@ -263,7 +277,7 @@ class LPred:
     def is_value(self):
         return False
     def __repr__(self):
-        return 'Expr<pred('+str(self.value_)+')>'
+        return 'Expr<pred('+repr(self.value_)+')>'
     def __str__(self):
         return 'pred('+str(self.value_)+')'
 
@@ -280,8 +294,14 @@ class LIfThenElse:
         return self.value_
     def reduce(self):
         reduced_guarda = self.value_[0].value()
+        while not reduced_guarda.is_value():
+            reduced_guarda = reduced_guarda.value()
         reduced_true = self.value_[1].value()
+        while not reduced_true.is_value():
+            reduced_true = reduced_true.value()
         reduced_false = self.value_[2].value()
+        while not reduced_false.is_value():
+            reduced_false = reduced_false.value()
         self.value_ = (reduced_guarda, reduced_true, reduced_false)
     def value(self):
         self.reduce()
@@ -314,7 +334,7 @@ class LIfThenElse:
     def is_value(self):
         return False
     def __repr__(self):
-        return 'Expr<if'+str(self.value_)+'>'
+        return 'Expr<if'+repr(self.value_)+'>'
     def __str__(self):
         return 'if '+str(self.value_[0])+' then '+str(self.value_[1])+' else '+str(self.value_[2])
 
