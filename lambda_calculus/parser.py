@@ -140,7 +140,7 @@ def p_typex_bool(p):
 
 def p_error(p):
     if p is not None:
-        exit('Error de sintaxis: "{}" no esperado.'.format(p.value))
+        exit('Error de sintaxis: "{}" no esperado en la posicion {}.'.format(p.value, p.lexpos))
     else:
         exit('Error de sintaxis.')
 
