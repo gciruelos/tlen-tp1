@@ -1,6 +1,9 @@
 
-ERROR_EVALUACION = 'Ilegal: se intenta aplicarle {} a {}.'
+ERROR_EVALUACION = 'Ilegal: se intenta aplicarle {1} a {0}.'
 ERROR_EVALUACION_TIPOS = 'Ilegal: se intenta realizar {1}({0}), que tiene tipo {2} en vez de {3}.'
+
+def is_var(x):
+    return x.__class__.__name__ == 'LVar'
 
 ###############################################################################
 ################################### TIPOS #####################################
@@ -81,7 +84,7 @@ class LBool:
     def replace(self, var, e):
         return self
     def eval_in(self, other_expr):
-        exit(ERROR_EVALUACION.format(str(other_expr), str(self.value_)))
+        exit(ERROR_EVALUACION.format(str(other_expr), str(self)))
     def is_value(self):
         return True
     def __repr__(self):
@@ -152,7 +155,7 @@ class LIsZero:
     def get(self):
         return self.value_
     def reduce(self):
-        while not self.value_.is_value():
+        while not self.value_.is_value() and not is_var(self.value_):
             self.value_ = self.value_.value()
     def value(self):
         self.reduce()
@@ -194,7 +197,7 @@ class LSucc:
     def minus_one(self):
         return self.value_
     def reduce(self):
-        while not self.value_.is_value():
+        while not self.value_.is_value() and not is_var(self.value_):
             self.value_ = self.value_.value()
     def value(self):
         self.reduce()
@@ -223,7 +226,7 @@ class LSucc:
     def __repr__(self):
         return 'Expr<succ('+str(self.value_)+')>'
     def __str__(self):
-        return 'succ('+str(self.value_)+')'
+        return str(self.get())
 
 class LPred:
     def __init__(self, e):
@@ -235,7 +238,7 @@ class LPred:
     def get(self):
         return self.value_
     def reduce(self):
-        while not self.value_.is_value():
+        while not self.value_.is_value() and not is_var(self.value_):
             self.value_ = self.value_.value()
     def value(self):
         self.reduce()
@@ -260,7 +263,7 @@ class LPred:
         self.value_ = self.value_.replace(var, e)
         return self
     def eval_in(self, other_expr):
-        exit(ERROR_EVALUACION.format(str(other_expr), 'pred'))
+        exit(ERROR_EVALUACION.format(str(other_expr), str(self)))
     def is_value(self):
         return False
     def __repr__(self):
@@ -281,13 +284,14 @@ class LIfThenElse:
         return self.value_
     def reduce(self):
         reduced_guarda = self.value_[0].value()
-        while not reduced_guarda.is_value():
+        while not reduced_guarda.is_value() and not is_var(reduced_guarda):
+            print(reduced_guarda.__class__.__name__)
             reduced_guarda = reduced_guarda.value()
         reduced_true = self.value_[1].value()
-        while not reduced_true.is_value():
+        while not reduced_true.is_value() and not is_var(reduced_guarda):
             reduced_true = reduced_true.value()
         reduced_false = self.value_[2].value()
-        while not reduced_false.is_value():
+        while not reduced_false.is_value() and not is_var(reduced_guarda):
             reduced_false = reduced_false.value()
         self.value_ = (reduced_guarda, reduced_true, reduced_false)
     def value(self):
