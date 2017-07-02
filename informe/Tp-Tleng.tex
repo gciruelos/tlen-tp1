@@ -44,6 +44,7 @@
 %  commentstyle=\it,
 %  stringstyle=\mdseries\rmfamily,
   showspaces=false,
+  breaklines=true,
 %  keywordstyle=\bfseries\rmfamily,
 %  columns=flexible,
 %  basicstyle=\small\scriptsize,
@@ -94,7 +95,7 @@ $$ T' \rightarrow (T -> T') $$
 $$ T' \rightarrow Bool $$
 $$ T' \rightarrow Nat $$
 
-
+\newpage
 \section{Código}
 \subsection{lexer.py}
 \lstinputlisting[language=Python,label=tipos]{../lambda_calculus/lexer.py}      
@@ -102,9 +103,6 @@ $$ T' \rightarrow Nat $$
 \subsection{parser.py}
 \lstinputlisting[language=Python,label=tipos]{../lambda_calculus/parser.py}      
 
-%hay que arreglar lo de la numeracion
-%\newpage
-%\setboolean{@twoside}{false}
 \includepdf[pages={1},pagecommand=\section{Enunciado},offset=40 -75]{enunciado.pdf}
 \includepdf[pages={1,2,3,4},offset=40 -75]{enunciado.pdf}
 
