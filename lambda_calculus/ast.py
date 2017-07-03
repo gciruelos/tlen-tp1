@@ -1,4 +1,4 @@
-
+# coding=utf-8# coding=utf-8# coding=utf-8# coding=utf-8# coding=utf-8# coding=utf-8# coding=utf-8# coding=utf-8
 ERROR_EVALUACION = 'Ilegal: se intenta aplicarle {1} a {0}.'
 ERROR_EVALUACION_TIPOS = 'Ilegal: se intenta realizar {1}({0}), que tiene tipo {2} en vez de {3}.'
 
