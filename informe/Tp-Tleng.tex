@@ -122,6 +122,11 @@ $$G = \left<  \{E,S, C, L, T'\}, \{var, true, false, iszero, succ, pred, (, ), 0
 \newpage
 \section{Código}
 \subsection{Uso}
+Utilizando de base el código del taller de ply, se necesitan instalar las dependencias que estan en $requirements.txt$.
+
+\verb| pip install -r --user requirements.txt |
+
+\verb| ./CLambda --debug 'if true then false else true' |
 
 \subsection{lexer.py}
 \lstinputlisting[language=Python,label=tipos]{../lambda_calculus/lexer.py}      
