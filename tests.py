@@ -19,6 +19,9 @@ tests = [
     ('(\\z:Nat. pred(z)) ((\\x:Nat->Nat. x succ(succ(0))) \\y:Nat. y)', '1', 'Nat'),
     ('(\\x:Nat.succ(x)) 0 0', None, None),
     ('(\\x:Nat->Nat. x succ(succ(0))) \y:Nat. y', '2', 'Nat'),
+    ('(\\x:Nat. if iszero(x) then succ(x) else pred(x)) pred(0)', '1', 'Nat'),
+    ('(\\x:Nat. if iszero(x) then succ(x) else pred(x)) succ(0)', '0', 'Nat'),
+    ('(\\x:Nat. if iszero(x) then succ(x) then pred(x)) succ(0)', None, None),
 ]
 
 
