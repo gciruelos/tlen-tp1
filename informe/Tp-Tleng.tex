@@ -1,11 +1,11 @@
 \documentclass[spanish, a4paper]{article}
 
 \usepackage{ulem}
-\hoffset=-1.9cm \voffset=-2.5cm
+\hoffset=-2cm \voffset=-2.5cm
 \parskip=0.5cm
-\topmargin 1cm
+\topmargin 2cm
 
-\textwidth 18cm
+\textwidth 16cm
 \textheight 24cm
 
 \usepackage{caratula}
@@ -15,6 +15,7 @@
 \usepackage{fancyhdr} %header lindo
 \usepackage{listingsutf8}
 \usepackage{pdfpages} %incluir pdf
+
 
 \usepackage{caption}
 \usepackage{subcaption}
@@ -76,34 +77,59 @@
 
 \newpage
 \section{Introducción}
+En el presente trabajo práctico se crea un analizador sintáctico y semántico para un subconjunto del lenguaje cálculo lambda tipado, sobre booleanos y naturales $\lambda^{bn}$, para dicha implementación se utilizó PLY que es una implementación en Python de las clásicas herramientas \textit{lex} y \textit{yacc}.
+
+El lexer está implementado en \textit{lexer.py}, en el mismo definimos las expresiones regulares y tokkes que sirven para definir si cadenas de entrada son o no válidas acorde a la gramática creada.
+El parser, donde definimos las producciones de la gramática, está implementado en \textit{parser.py}
+
+\newpage
 \section{Gramática}
-$$ E \rightarrow S L | S  $$
-$$ S \rightarrow S C   | \lambda  $$
-$$ C \rightarrow (E) $$
-$$ C \rightarrow var $$
-$$ C \rightarrow true $$
-$$ C \rightarrow false $$
-$$ C \rightarrow 0 $$
-$$ C \rightarrow iszero(E) $$
-$$ C \rightarrow succ(E) $$
-$$ C \rightarrow pred(E) $$
-$$ C \rightarrow if E else E then C $$
-$$ L \rightarrow \ V : T . E $$
-$$ T \rightarrow T' -> T $$
-$$ T \rightarrow T' $$
-$$ T' \rightarrow (T -> T') $$
-$$ T' \rightarrow Bool $$
-$$ T' \rightarrow Nat $$
+
+La mayor dificultad del trabajo fue armar una gramática que sirviese para para el lenguaje pedido, el mismo es:
+
+\begin{verbatim}
+M ::= 		x | true | false | if M1 then M2 else M3 | \x:T.M | M1 M2 | 0 | succ(M) 
+            | pred(M) | iszero(M)
+\end{verbatim}
+
+Y la gramática que se implementó:
+
+%$$G = \textlangle {E,S, C, L, T'}, {var, true, false, 0, Bool, Nat}, P, E \textrangle$$
+$$G = \left<  \{E,S, C, L, T'\}, \{var, true, false, iszero, succ, pred, (, ), 0, Bool, Nat, if, then, else,  \textnormal{\textbackslash} V, :, . \}, P, E  \right> \textnormal{, con P:} $$
+\begin{eqnarray}
+ E  & \rightarrow  & S L \nonumber \\
+  E  & \rightarrow & S L \nonumber \\
+  E  & \rightarrow & S  \nonumber \\
+  S  & \rightarrow & S C \nonumber \\
+  S  & \rightarrow & \lambda  \nonumber\\
+  C  &\rightarrow & (E)  \nonumber\\
+  C &  \rightarrow & var  \nonumber\\
+  C & \rightarrow & true  \nonumber\\
+  C & \rightarrow & false  \nonumber\\
+  C & \rightarrow & 0 \nonumber \\
+  C & \rightarrow & iszero(E)  \nonumber\\
+  C & \rightarrow & succ(E)  \nonumber\\
+  C & \rightarrow & pred(E)  \nonumber\\
+  C & \rightarrow & if \: E \: else \: E \: then \: C  \nonumber\\
+  L & \rightarrow &  \textnormal{\textbackslash} V : T . E  \nonumber\\
+  T & \rightarrow & T'  \rightarrow T  \nonumber\\
+  T & \rightarrow & T'  \nonumber\\
+  T' & \rightarrow & (T -> T')  \nonumber\\
+  T' & \rightarrow & Bool  \nonumber\\
+  T' &\rightarrow & Nat  \nonumber\\
+\end{eqnarray}
 
 \newpage
 \section{Código}
+\subsection{Uso}
+
 \subsection{lexer.py}
 \lstinputlisting[language=Python,label=tipos]{../lambda_calculus/lexer.py}      
 \newpage
 \subsection{parser.py}
 \lstinputlisting[language=Python,label=tipos]{../lambda_calculus/parser.py}      
 
-\includepdf[pages={1},pagecommand=\section{Enunciado},offset=40 -75]{enunciado.pdf}
+%\includepdf[pages={1},pagecommand=\section{Enunciado},offset=40 -75]{enunciado.pdf}
 \includepdf[pages={1,2,3,4},offset=40 -75]{enunciado.pdf}
 
 \end{document}
