@@ -1,3 +1,4 @@
+# coding=utf-8
 """Parser LR(1) de lambda."""
 import ply.yacc as yacc
 from .lexer import tokens
