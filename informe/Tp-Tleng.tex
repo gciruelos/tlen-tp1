@@ -153,7 +153,7 @@ Luego, antes de evaluar el \textit{AST}, necesitamos propagar todos estos valore
 En las reglas de los tipos ($T \rightarrow T' -> T$), PLY nos decía que había un conflicto. Esto se soluciona de forma tan fácil como indicarle que la flecha asocia a derecha. Sin embargo, en algunas versiones de PLY no parecía tomar este comando e igualmente salía el Warning, pero lo resolvía de la forma correcta.
 
 \subsection{Uso y Tests}
-Para poder ejecutar el código necesitamos instalar varias dependencias, como utilizamos de base el código del taller de \textbf{ply} usamos el mismo archivo \verb|requirements.txt|, la única diferencia con el taller es que el trabajo está implementado en Python3 por lo que tenemos que usar \textit{pip3} en lugar de \textit{pip}.
+Para poder ejecutar el código necesitamos instalar varias dependencias, como utilizamos de base el código del taller de \textbf{PLY} usamos el mismo archivo \verb|requirements.txt|, la única diferencia con el taller es que el trabajo está implementado en Python3 por lo que tenemos que usar \textit{pip3} en lugar de \textit{pip}.
 
 \verb| pip3 install -r requirements.txt |
 
@@ -212,7 +212,16 @@ PASSED (\x:Nat. if iszero(x) then succ(x) then true) succ(0)
 \newpage
 \subsection{tests.py}
 \lstinputlisting[language=Python,label=tipos]{../tests.py}      
+
+\newpage
 \section{Conclusiones}
+\begin{itemize}
+\item \textit{PLY} demostró ser una herramienta muy útil que nos permitió llevar, casi sin inconvenientes, la implementación del papel al código.
+
+\item La mayor dificultad fue armar la gramática de forma que no quede ambigua, especialmente con los tipos flecha y tuvimos que decirle a \textit{PLY} el tipo de asociación que queríamos. Se tuvo que crear la noción de \textit{contexto} para poder usarla al evaluar las expresiones.
+
+\item También podemos decir que los temas vistos durante la cursada como gramática de atributos, gramática LALR, parsers, etc. fueron útiles para poder entender y resolver los problemas presentados y que el trabajo práctico fue un buena aplicación de conceptos que de otra forma hubiesen quedado solo en el plano teórico.
+\end{itemize}
 
 %\includepdf[pages={1},pagecommand=\section{Enunciado},offset=40 -75]{enunciado.pdf}
 \includepdf[pages={1,2,3,4},offset=40 -75]{enunciado.pdf}
