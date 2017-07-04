@@ -91,6 +91,8 @@ La mayor dificultad del trabajo fue armar una gramática que sirviese para para 
 \begin{verbatim}
 M ::= 		x | true | false | if M1 then M2 else M3 | \x:T.M | M1 M2 | 0 | succ(M) 
             | pred(M) | iszero(M)
+            
+T ::=		Bool | Nat | T1 -> T2            
 \end{verbatim}
 
 Luego de varias pruebas se llegó a esta gramática:
