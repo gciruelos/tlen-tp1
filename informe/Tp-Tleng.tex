@@ -121,11 +121,11 @@ $$G = \left<  \{E,S, C, L, T'\}, \{var, true, false, iszero, succ, pred, (, ), 0
 Expliquemosla brevemente:
 \begin{itemize}
   \item $E$. La idea es que este no terminal represente a todas las expresiones, que o bien pueden ser un $S$, o bien un $S$ aplicado a un $L$.
-  \item $S$. Estos terminos seran una lista de aplicaciones a cosas distintas que un L (puede haber un $L$, pero deberá estar entre parentesis, siguiendo la reduccion $S C \rightarrow S (E) \rightarrow S (S L) \rightarrow S (L)$). Este no-terminal nos permite forzar que la aplicación asocie a izquierda (notemos que la producción es recursiva a izquierda).
-  \item $C$. Estos serán todos los t\'erminos sin par\'entesis, excepto los lambda. Necesitamos que los lambda vayan entre parentesis en general, porque por ejemplo el string $\textbackslash x\ :\ Nat\ .\ x\ y$ no queda claro si es una función aplicada a $y$, o si $x\ y$ es el cuerpo de la abtracción.
+  \item $S$. Estos terminos seran una lista de aplicaciones a cosas distintas que un L (puede haber un $L$, pero deberá estar entre paréntesis, siguiendo la reducción $S C \rightarrow S (E) \rightarrow S (S L) \rightarrow S (L)$). Este no-terminal nos permite forzar que la aplicación asocie a izquierda (notemos que la producción es recursiva a izquierda).
+  \item $C$. Estos serán todos los términos sin paréntesis, excepto los lambda. Necesitamos que los lambda vayan entre paréntesis en general, porque por ejemplo el string $\textbackslash x\ :\ Nat\ .\ x\ y$ no queda claro si es una función aplicada a $y$, o si $x\ y$ es el cuerpo de la abtracción.
   \item $L$. Básicamente las abstracciones lambda.
-  \item $T$. Como los tipos flecha asocian a derecha ($Nat \rightarrow Nat \rightarrow Nat$ es $Nat \rightarrow (Nat \rightarrow Nat)$), necesitamos tener dos no terminales para que la grática no nos quede ambigua.
-  \item $T'$. Los tipos de la derecha de una flecha tienen que, o bien ser un tipo flecha entre parentesis, o bien ser tipos básicos.
+  \item $T$. Como los tipos flecha asocian a derecha ($Nat \rightarrow Nat \rightarrow Nat$ es $Nat \rightarrow (Nat \rightarrow Nat)$), necesitamos tener dos no terminales para que la grámatica no nos quede ambigua.
+  \item $T'$. Los tipos de la derecha de una flecha tienen que, o bien ser un tipo flecha entre paréntesis, o bien ser tipos básicos.
 \end{itemize}
 
 Veamos además las expresiones regulares de cada token:
@@ -138,22 +138,21 @@ Veamos además las expresiones regulares de cada token:
 \newpage
 \section{Código}
 \subsection{Explicación}
-En el código basicamente tenemos una clase para cada tipo de t\'ermino. Todas estas clases son polimorficas y saben responder los mismos mensajes (evaluate, dame tu tipo, etc). La idea es que el parseo nos devuelva un árbol de todas estas clases, y simplemente le pidamos el valor y el tipo a la raiz, que se ocupará de hacer todas las  llamadas necesarias a sus hijos, y así sucesivamente.
+En el código basicamente tenemos una clase para cada tipo de término. Todas estas clases son polimorficas y saben responder los mismos mensajes (evaluate, dame tu tipo, etc). La idea es que el parseo nos devuelva un árbol de todas estas clases, y simplemente le pidamos el valor y el tipo a la raiz, que se ocupará de hacer todas las  llamadas necesarias a sus hijos, y así sucesivamente.
 
-O sea, lo que sucede es que al terminar de parsear tenemos el AST de la cadena, y luego la evaluamos siguiendo las reglas del cálculo lambda.
+O sea, lo que sucede es que al terminar de parsear tenemos el \textit{AST} de la cadena, y luego la evaluamos siguiendo las reglas del cálculo lambda.
 
-Un paso intermedio no menor (luego de obtener el AST pero antes de evaluar) es que le asignamos ``contextos'' a todos los subt\'erminos de la cadena. Por ejemplo, en la cadena ``(\textbackslash x\ :\ Nat\ .\ x)'', nos gustaría que la clase que representara a la $x$ del cuerpo de la abstracción supiera que esa $x$ tiene tipo $Nat$.
+Un paso intermedio no menor (luego de obtener el \textit{AST} pero antes de evaluar) es que le asignamos ``contextos'' a todos los subtérminos de la cadena. Por ejemplo, en la cadena ``(\textbackslash x\ :\ Nat\ .\ x)'', nos gustaría que la clase que representara a la $x$ del cuerpo de la abstracción supiera que esa $x$ tiene tipo $Nat$.
 
-Esto lo logramos con una función llamada ``add\_judgement'', que simplemente lo que hace es tomar el contexto de un t\'ermino, y pasarselo a todos sus hijos. Además, si el t\'ermino es un lambda, le va a pasar a los hijos su contexto sumandole un juicio que dice que el parámetro tiene el tipo dado.
+Esto lo logramos con una función llamada ``add\_judgement'', que simplemente lo que hace es tomar el contexto de un término, y pasárselo a todos sus hijos. Además, si el término es un lambda, le va a pasar a los hijos su contexto sumandole un juicio que dice que el parámetro tiene el tipo dado.
 
-Luego, antes de evaluar el AST, necesitamos propagar todos estos valores hacia abajo. Logramos esto haciendo una llamada al ``add\_judgement'' de la raíz con valores dummy.
+Luego, antes de evaluar el \textit{AST}, necesitamos propagar todos estos valores hacia abajo. Logramos esto haciendo una llamada al ``add\_judgement'' de la raíz con valores dummy.
 
 \subsubsection{Conflicto}
 
 En las reglas de los tipos ($T \rightarrow T' -> T$), PLY nos decía que había un conflicto. Esto se soluciona de forma tan fácil como indicarle que la flecha asocia a derecha. Sin embargo, en algunas versiones de PLY no parecía tomar este comando e igualmente salía el Warning, pero lo resolvía de la forma correcta.
 
-\section{Uso y Código}
-\subsection{Tests}
+\subsection{Uso y Tests}
 Para poder ejecutar el código necesitamos instalar varias dependencias, como utilizamos de base el código del taller de \textbf{ply} usamos el mismo archivo \verb|requirements.txt|, la única diferencia con el taller es que el trabajo está implementado en Python3 por lo que tenemos que usar \textit{pip3} en lugar de \textit{pip}.
 
 \verb| pip3 install -r requirements.txt |
@@ -210,10 +209,10 @@ PASSED (\x:Nat. if iszero(x) then succ(x) then true) succ(0)
 \newpage
 \subsection{parser.py}
 \lstinputlisting[language=Python,label=tipos]{../lambda_calculus/parser.py}      
-
+\newpage
 \subsection{tests.py}
 \lstinputlisting[language=Python,label=tipos]{../tests.py}      
-
+\section{Conclusiones}
 
 %\includepdf[pages={1},pagecommand=\section{Enunciado},offset=40 -75]{enunciado.pdf}
 \includepdf[pages={1,2,3,4},offset=40 -75]{enunciado.pdf}
