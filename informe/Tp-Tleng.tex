@@ -49,6 +49,7 @@
 %  keywordstyle=\bfseries\rmfamily,
 %  columns=flexible,
 %  basicstyle=\small\scriptsize,
+  basicstyle=\small,
   showstringspaces=false,
   morecomment=[l]\%,
 }
@@ -63,9 +64,9 @@
 \begin{document}
 
 \fecha{\today}
-\titulo{Analizador Sintáctico y Semántico para $\lambda^{bn}$}
-\materia{Teoría de Lenguajes}
-%\submateria{asd}
+\titulo{Teoría de Lenguajes\\\textit{Analizador Sintáctico y Semántico para }$\lambda^{bn}$}
+\materia{Grupo: \textit{Ullman, Sethi y los demás}}
+
 
 \integrante{Gabriel Eric Thibeault}{114/13}{gabriel.eric.thibeault@gmail.com}
 \integrante{Gonzalo Ciruelos Rodríguez}{063/14}{gonzalo.ciruelos@gmail.com}
@@ -90,6 +91,8 @@ La mayor dificultad del trabajo fue armar una gramática que sirviese para para 
 \begin{verbatim}
 M ::= 		x | true | false | if M1 then M2 else M3 | \x:T.M | M1 M2 | 0 | succ(M) 
             | pred(M) | iszero(M)
+            
+T ::=		Bool | Nat | T1 -> T2            
 \end{verbatim}
 
 Luego de varias pruebas se llegó a esta gramática:
