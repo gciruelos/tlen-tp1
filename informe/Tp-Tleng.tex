@@ -95,7 +95,7 @@ M ::= 		x | true | false | if M1 then M2 else M3 | \x:T.M | M1 M2 | 0 | succ(M)
 Luego de varias pruebas se llegó a esta gramática:
 
 
-$$G = \left<  \{E,S, C, L, T'\}, \{var, true, false, iszero, succ, pred, (, ), 0, Bool, Nat, if, then, else,  \textnormal{\textbackslash} V, :, . \}, P, E  \right> \textnormal{, con P:} $$
+$$G = \left<  \{E,S, C, L, T'\}, \{var, true, false, iszero, succ, pred, (, ), 0, Bool, Nat, if, then, else,  \textnormal{\textbackslash}, :, . \}, P, E  \right> \textnormal{, con P:} $$
 \begin{eqnarray}
   E & \rightarrow  & S\ L \nonumber \\
     & |            & S  \nonumber \\
@@ -218,7 +218,7 @@ PASSED (\x:Nat. if iszero(x) then succ(x) then true) succ(0)
 \begin{itemize}
 \item \textit{PLY} demostró ser una herramienta muy útil que nos permitió llevar, casi sin inconvenientes, la implementación del papel al código.
 
-\item La mayor dificultad fue armar la gramática de forma que no quede ambigua, especialmente con los tipos flecha y tuvimos que decirle a \textit{PLY} el tipo de asociación que queríamos. Se tuvo que crear la noción de \textit{contexto} para poder usarla al evaluar las expresiones.
+\item La mayor dificultad fue armar la gramática de forma que no quede ambigua, especialmente con la aplicación de función. Además, fue dificultoso ``pelearnos'' con \textit{PLY} para que nos tome la asociatividad de la flecha. Se tuvo que crear la noción de \textit{contexto} para poder usarla al evaluar las expresiones.
 
 \item También podemos decir que los temas vistos durante la cursada como gramática de atributos, gramática LALR, parsers, etc. fueron útiles para poder entender y resolver los problemas presentados y que el trabajo práctico fue un buena aplicación de conceptos que de otra forma hubiesen quedado solo en el plano teórico.
 \end{itemize}
